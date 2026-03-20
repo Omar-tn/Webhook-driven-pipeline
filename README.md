@@ -1,3 +1,5 @@
+![test badge](https://github.com/Omar-tn/Webhook-driven-pipeline/actions/workflows/ci.yml/badge.svg)
+
 # Set Up:
 ##  1. initialize project
 
