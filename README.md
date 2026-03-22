@@ -27,3 +27,8 @@ npx tsc --init
 ```bash
 npm install -D vitest
 ```
+
+
+temp:
+   - npm install -g ngrok
+   - ngrok http 3000
