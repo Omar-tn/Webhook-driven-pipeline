@@ -1,5 +1,5 @@
 import express from 'express';
-import {events, webhooksHandler} from "./api/webhooks.js";
+import {events, startWorker, webhooksHandler} from "./api/webhooks.js";
 import {pipelineCreator} from "./api/pipelines";
 
 const app = express();
@@ -48,7 +48,7 @@ app.listen(Port, () => {
     console.log('Server running on http://localhost:' +
                     Port);
 
-
+    startWorker();
 
 });
 

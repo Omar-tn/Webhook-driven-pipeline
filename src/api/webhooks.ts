@@ -12,6 +12,7 @@ type WebhookEvent = {
 
 export let events: WebhookEvent[] = [];
 let idCounter = 1;
+let queue: WebhookEvent[] = [];
 
 export async function webhooksHandler(req: Request, res: Response) {
 
@@ -26,8 +27,29 @@ export async function webhooksHandler(req: Request, res: Response) {
     };
 
     events.push(event);
+    queue.push(event);
 
     console.log("Stored event:", event.id);
+    console.log("Queued event:", event.id);
+
     respondWithJSON(res, 200,'======= Webhook Received =======');
 
+}
+
+function processEvent(event: WebhookEvent) {
+    console.log(">>> Processing event:", event.id);
+}
+
+export function startWorker() {
+    setInterval( async () => {
+        if (queue.length === 0) return;
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const event = queue.shift(); // FIFO
+
+        if (event) {
+            processEvent(event);
+        }
+    }, 1000); // every 1 second
 }
