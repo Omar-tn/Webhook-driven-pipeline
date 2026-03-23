@@ -1,11 +1,33 @@
 import { Request, Response } from "express";
 import {respondWithJSON} from "./json.js";
 
-export function webhooksHandler(req: Request, res: Response) {
-    let sourceKey = req.params.sourceKey;
-    console.log("======= Webhook Received =======");
-    console.log("Source:", sourceKey);
-    console.log("Body:", JSON.stringify(req.body, null, 2));
-    respondWithJSON(res, 200,'======= Webhook Recieved =======');
+
+type WebhookEvent = {
+    id: number;
+    sourceKey: string;
+    payload: any;
+    headers: any;
+    receivedAt: Date;
+};
+
+export let events: WebhookEvent[] = [];
+let idCounter = 1;
+
+export async function webhooksHandler(req: Request, res: Response) {
+
+    const sourceKey = req.params.sourceKey as string;
+
+    const event: WebhookEvent = {
+        id: idCounter++,
+        sourceKey,
+        payload: req.body,
+        headers: req.headers,
+        receivedAt: new Date()
+    };
+
+    events.push(event);
+
+    console.log("Stored event:", event.id);
+    respondWithJSON(res, 200,'======= Webhook Received =======');
 
 }

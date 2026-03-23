@@ -29,6 +29,70 @@ npm install -D vitest
 ```
 
 
-temp:
-   - npm install -g ngrok
-   - ngrok http 3000
+
+
+---
+
+# Run/use
+run and start the app:
+## run debugging:
+
+``` 
+npm run ded
+```
+# use API:
+
+## 1. Pipeline Registration:
+### POST: /pipelines
+### Body:
+```json
+{
+  "sourceKey": "test",
+  "target": "http://localhost:3000/dummy-target"
+}
+```
+### Example:
+```shell
+curl -X POST http://localhost:3000/pipelines \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sourceKey": "test",
+    "target": "http://localhost:3000/dummy-target"
+  }
+```
+### Response:
+```json
+{ "message": "Pipeline created" }
+```
+
+
+> Note: sourceKey is unique and must be unique for each pipeline
+
+
+## 2. Trigger pipeline:
+### POST: webhook/:sourceKey
+### Body:
+```json
+{
+  "payload": "test"
+}
+```
+### Example:
+```shell
+curl -X POST http://localhost:3000/webhook/test \
+  -H "Content-Type: application/json" \
+  -d  '{
+        "message": "hello"
+      }'
+```
+### Response:
+```text
+======= Webhook Received =======
+```
+
+    
+
+
+
+
+
