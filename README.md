@@ -28,6 +28,61 @@ npx tsc --init
 npm install -D vitest
 ```
 
+# for database:
+## 1.
+```
+npm i drizzle-orm postgres
+
+```
+## 2.
+```
+sudo service postgresql start
+```
+## 3.
+```
+sudo -u postgres psql
+```
+## 3.
+``` 
+CREATE DATABASE webhook;
+```
+
+## 4. 
+```
+
+ALTER USER postgres PASSWORD 'postgres';
+\c webhook
+```
+
+## 5.
+```text
+npm install drizzle-orm pg
+npm install -D drizzle-kit
+```
+
+## 6. make .env file with:
+```text
+DB_URL=postgresql://postgres:postgres@localhost:5432/webhook?sslmode=disable
+```
+## 7.
+```text
+npx drizzle-kit push
+```
+
+## 8. make drizzle.config.ts file with:
+```typescript
+import "dotenv/config";
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+schema: "./src/db/schema.ts",
+out: "./src/db/migrations",
+dialect: "postgresql",
+dbCredentials: {
+url: process.env.DB_URL!,
+},
+});
+```
 
 
 

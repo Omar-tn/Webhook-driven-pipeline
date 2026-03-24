@@ -1,6 +1,7 @@
+import "dotenv/config";
 import express from 'express';
-import {events, startWorker, webhooksHandler} from "./api/webhooks.js";
-import {pipelineCreator} from "./api/pipelines";
+import {events, startWorker, webhooksHandler} from "./api/webhook.js";
+import {pipelineCreator} from "./api/pipeline.js";
 
 const app = express();
 let Port = 3000;
@@ -14,16 +15,6 @@ app.get('/', (req, res) => {
     console.log('Root APi');
     res.send('Server is running at /');
 });
-
-//  In-memory pipelines
-type Pipeline = {
-    sourceKey: string;
-    target: string;
-};
-
-export const pipelines: Pipeline[] = [];
-
-
 
 app.get("/events", (req, res) => {
     res.json(events);
@@ -48,7 +39,7 @@ app.listen(Port, () => {
     console.log('Server running on http://localhost:' +
                     Port);
 
-    startWorker();
+startWorker();
 
 });
 

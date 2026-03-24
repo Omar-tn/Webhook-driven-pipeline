@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1774354146646,
+      "tag": "0000_glossy_celestials",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774364423194,
+      "tag": "0001_concerned_elektra",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774376588993,
+      "tag": "0002_equal_prowler",
+      "breakpoints": true
+    }
+  ]
+}
