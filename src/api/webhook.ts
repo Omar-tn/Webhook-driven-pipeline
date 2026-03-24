@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import {respondWithJSON} from "./json.js";
 
 import {getPipelines} from "../db/queries/piplines.js";
-import  {Pipeline} from "../db/schema.js";
+import {NewEvent, Pipeline} from "../db/schema.js";
+import {applyAction} from "../core/action.js";
 
 type WebhookEvent = {
     id: number;
@@ -12,15 +13,15 @@ type WebhookEvent = {
     receivedAt: Date;
 };
 
-export let events: WebhookEvent[] = [];
+export let events: NewEvent[] = [];
 let idCounter = 1;
-let queue: WebhookEvent[] = [];
+let queue: NewEvent[] = [];
 
 export async function webhooksHandler(req: Request, res: Response) {
 
     const sourceKey = req.params.sourceKey as string;
 
-    const event: WebhookEvent = {
+    const event: NewEvent = {
         id: idCounter++,
         sourceKey,
         payload: req.body,
@@ -38,7 +39,7 @@ export async function webhooksHandler(req: Request, res: Response) {
 
 }
 
-async function processEvent(event: WebhookEvent) {
+async function processEvent(event: NewEvent) {
     console.log(">>> Processing event:", event.id);
 
     const matched = await getPipelines( event.sourceKey);
@@ -47,17 +48,16 @@ async function processEvent(event: WebhookEvent) {
         console.log("No pipeline matched for:", event.sourceKey);
         return;
     }
-
+    //console.log("passed check length now to loop");
     for (const pipeline of matched) {
 
-        /*const pass = applyAction(event, pipeline);
+        const pass = applyAction(event, pipeline);
 
         if (!pass) {
             console.log("Event filtered out");
             continue;
         }
-*/
-        console.log("Forwarding to target...");
+        console.log("Forwarding to : ", pipeline.target, "");
 
         try {
             await fetch(pipeline.target, {
@@ -71,25 +71,12 @@ async function processEvent(event: WebhookEvent) {
     }
 }
 
-function applyAction(event: WebhookEvent, pipeline: Pipeline) {
-    if (!pipeline.action) return true;
 
-    const action = typeof pipeline.action === 'string'
-        ? JSON.parse(pipeline.action)
-        : pipeline.action;
-
-    if (action?.type === "filter") {
-        const value = event.payload[action?.field];
-        return value === action?.equals;
-    }
-
-    return true;
-}
 
 export function startWorker() {
     setInterval( async () => {
         if (queue.length === 0) return;
-
+        //console.log("Processing queue:", queue.length);
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const event = queue.shift(); // FIFO
