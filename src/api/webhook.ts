@@ -5,6 +5,7 @@ import {getPipelines} from "../db/queries/piplines.js";
 import {NewEvent, Pipeline} from "../db/schema.js";
 import {applyAction} from "../core/action.js";
 import {sendWithRetry} from "../core/retry.js";
+import {enqueue, setHandler} from "../core/queue.js";
 
 type WebhookEvent = {
     id: number;
@@ -17,6 +18,7 @@ type WebhookEvent = {
 export let events: NewEvent[] = [];
 let idCounter = 1;
 let queue: NewEvent[] = [];
+setHandler(processEvent);
 
 export async function webhooksHandler(req: Request, res: Response) {
 
@@ -31,10 +33,12 @@ export async function webhooksHandler(req: Request, res: Response) {
     };
 
     events.push(event);
-    queue.push(event);
+
 
     console.log("Stored event:", event.id);
     console.log("Queued event:", event.id);
+
+
 
     respondWithJSON(res, 200,'======= Webhook Received =======');
 
@@ -81,10 +85,10 @@ export function startWorker() {
         //console.log("Processing queue:", queue.length);
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        const event = queue.shift(); // FIFO
+        const event = events.shift(); // FIFO
 
         if (event) {
-            processEvent(event);
+            await enqueue(event);
         }
     }, 1000); // every 1 second
 }
