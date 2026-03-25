@@ -4,6 +4,7 @@ import {respondWithJSON} from "./json.js";
 import {getPipelines} from "../db/queries/piplines.js";
 import {NewEvent, Pipeline} from "../db/schema.js";
 import {applyAction} from "../core/action.js";
+import {sendWithRetry} from "../core/retry.js";
 
 type WebhookEvent = {
     id: number;
@@ -60,11 +61,12 @@ async function processEvent(event: NewEvent) {
         console.log("Forwarding to : ", pipeline.target, "");
 
         try {
-            await fetch(pipeline.target, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(event.payload),
-            });
+            let success = await sendWithRetry(pipeline.target,
+                event,
+                3,
+                1000);
+            if (!success)
+                console.log("Final failure for event:", event.id);
         } catch (err) {
             console.error("Forward failed:", err);
         }
