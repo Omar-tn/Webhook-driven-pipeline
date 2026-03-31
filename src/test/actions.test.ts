@@ -15,19 +15,19 @@ describe("applyAction - filter", () => {
         }
     }as Pipeline;
 
-    it("should pass when condition matches", () => {
+    it("should pass when condition matches", async () => {
         const event = { payload: { msg: "hello" } } as NewEvent;
 
+        let res = await applyAction(event, pipe);
 
-
-        expect(applyAction(event, pipe)).toBe(true);
+        expect(res.action).toBe("filter");
     });
 
-    it("should fail when condition does not match", () => {
+    it("should fail when condition does not match", async () => {
         const event = { payload: { msg: "no" } } as NewEvent;
 
-
-        expect(applyAction(event, pipe)).toBe(false);
+        let res = await applyAction(event, pipe);
+        expect(res.action).toBe(null);
     });
 
 });
