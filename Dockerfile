@@ -1,0 +1,14 @@
+FROM node:22
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npx tsc
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npx drizzle-kit push && node dist/index.js"]
