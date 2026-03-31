@@ -1,5 +1,15 @@
 ![test badge](https://github.com/Omar-tn/Webhook-driven-pipeline/actions/workflows/ci.yml/badge.svg)
 
+# Webhook-driven-pipeline
+##  A webhook driven pipeline that can be used to trigger actions on events.
+
+# Docker set up:
+## Run the system (one command)
+```bash
+docker compose up --build
+```
+
+
 # Set Up:
 ##  1. initialize project
 
@@ -93,7 +103,7 @@ run and start the app:
 ## run debugging:
 
 ``` 
-npm run ded
+npm run dev
 ```
 # use API:
 
