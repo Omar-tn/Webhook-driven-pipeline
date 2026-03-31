@@ -103,7 +103,7 @@ run and start the app:
 ## run debugging:
 
 ``` 
-npm run ded
+npm run dev
 ```
 # use API:
 
