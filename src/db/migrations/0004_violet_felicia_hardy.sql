@@ -1,0 +1,1 @@
+ALTER TABLE "pipelines" RENAME COLUMN "target" TO "targets";

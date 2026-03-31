@@ -1,7 +1,8 @@
 import "dotenv/config";
 import express from 'express';
-import {events, startWorker, webhooksHandler} from "./api/webhook.js";
+import {events, eventStatusHandler, processEvent, startWorker, webhooksHandler} from "./api/webhook.js";
 import {pipelineCreator} from "./api/pipeline.js";
+import {enqueue, processQueue, setHandler} from "./core/queue.js";
 
 const app = express();
 let Port = 3000;
@@ -16,10 +17,7 @@ app.get('/', (req, res) => {
     res.send('Server is running at /');
 });
 
-app.get("/events", (req, res) => {
-    res.json(events);
-});
-
+app.get("/events/:id", eventStatusHandler);
 
 //  Register pipeline
 app.post("/pipelines", pipelineCreator);
@@ -35,11 +33,13 @@ app.post("/dummy-target", (req, res) => {
 
 
 
-app.listen(Port, () => {
+app.listen(Port, async () => {
     console.log('Server running on http://localhost:' +
                     Port);
 
-startWorker();
+    setHandler(processEvent);
+    await processQueue();
+    console.log("Worker started");
 
 });
 

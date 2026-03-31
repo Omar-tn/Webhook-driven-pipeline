@@ -19,7 +19,7 @@ describe("sendWithRetry", () => {
             status: 500
         }) as any;
 
-        const result = await sendWithRetry("http://test", {}, 2, 10);
+        const result = await sendWithRetry("http://test", {}, 'POST',2, 10);
 
         expect(result).toBe(false);
     });

@@ -6,7 +6,7 @@ describe("applyAction - filter", () => {
 
     const pipe = {
         sourceKey: "test",
-        target: "http://localhost:3000/dummy-target",
+        targets: ["http://localhost:3000/dummy-target"],
 
         action: {
             type: "filter",
